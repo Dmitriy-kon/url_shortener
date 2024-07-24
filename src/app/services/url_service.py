@@ -49,5 +49,6 @@ class UrlService:
     async def delete_url(self, input_dto: RequestDeleteUrlDto) -> None:
         try:
             await self.url_repo.delete_url(url_id=input_dto.urlid)
-        except Exception as ex:
-            print(f"Some exception {ex}")
+
+        except Exception as ex:  # noqa: BLE001
+            print(f"Some exception {ex}") # noqa: T201

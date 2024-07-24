@@ -34,9 +34,10 @@ class UserSqlalchemyRepository:
             return None
         return user.to_dto()
 
-    async def insert_user(self, username: str, hashed_password: str) -> None:
+    async def create_user(self, username: str, hashed_password: str) -> None:
         stmt = insert(UserDb).values(username=username, hashed_password=hashed_password)
-        await self.session.execute(stmt)
+        res = await self.session.execute(stmt)
+        print(res) # noqa: T201
 
     async def change_user(
         self, user_id: int, username: str, hashed_password: str
