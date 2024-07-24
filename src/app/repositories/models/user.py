@@ -1,13 +1,15 @@
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from sqlalchemy import text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.repositories.models.base import Base
+from app.services.dto.dto import ResponseUrlDto, ResponseUserDto
 
 if TYPE_CHECKING:
     from app.repositories.models.url import UrlDb
+
 
 class UserDb(Base):
     __tablename__ = "users"
@@ -25,3 +27,11 @@ class UserDb(Base):
     )
 
     urls: Mapped[list["UrlDb"]] = relationship("Url", back_populates="user")
+
+    def to_dto(self) -> ResponseUserDto:
+        return ResponseUserDto.create(
+            uid=cast(int, self.uid),
+            username=cast(str, self.username),
+            hashed_password=cast(str, self.hashed_password),
+            urls=cast(list["ResponseUrlDto"], [url.to_dto() for url in self.urls]),
+        )
