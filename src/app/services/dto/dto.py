@@ -33,10 +33,27 @@ class RequestUrlDto:
     url: str
     short_url: str
 
+@dataclass(frozen=True)
+class RequestLimitOffsetUrlDto:
+    limit: int
+    offset: int
+    user_id: int
 
 @dataclass(frozen=True)
+class RequestDeleteUrlDto:
+    urlid: int
+
+
+@dataclass(frozen=True)
+class RequestInsertUrlDto:
+    url: str
+    short_url: str
+    user_id: int
+
+
+@dataclass
 class RequestUpdateUrlDto:
-    id: int
+    urlid: int
     url: str
     short_url: str
 
