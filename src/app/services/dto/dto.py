@@ -47,7 +47,6 @@ class RequestDeleteUrlDto:
 @dataclass(frozen=True)
 class RequestInsertUrlDto:
     url: str
-    short_url: str
     user_id: int
 
 
@@ -55,7 +54,6 @@ class RequestInsertUrlDto:
 class RequestUpdateUrlDto:
     urlid: int
     url: str
-    short_url: str
 
 
 @dataclass(frozen=True)

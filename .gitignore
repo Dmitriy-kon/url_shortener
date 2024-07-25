@@ -7,3 +7,4 @@ venv
 .env*
 **.mypy_cache
 **.ruff_cache
+temp_config**

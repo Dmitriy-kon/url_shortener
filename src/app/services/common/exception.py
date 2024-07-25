@@ -12,3 +12,9 @@ class UserNotFoundError(ServiceError):
 
 class UserAlreadyExistsError(ServiceError):
     pass
+
+class UserPasswordNotMatchError(ServiceError):
+    pass
+
+class UrlAllreadyExistsError(ServiceError):
+    pass

@@ -16,7 +16,7 @@ class UrlDb(Base):
 
     urlid: Mapped[int] = mapped_column(primary_key=True)
     url: Mapped[str] = mapped_column(nullable=False)
-    short_url: Mapped[str] = mapped_column(nullable=False)
+    short_url: Mapped[str] = mapped_column(nullable=False, unique=True)
     clics: Mapped[int] = mapped_column(default=0)
 
     created_at: Mapped[datetime] = mapped_column(

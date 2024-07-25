@@ -9,11 +9,21 @@ from app.services.dto.dto import RequestUserDto
 auth_route = APIRouter(tags=["auth"], prefix="/auth", route_class=DishkaRoute)
 
 
-@auth_route.post("/signup", response_model=SUserOut)
-async def signup_user(schema: SUserIn, service: FromDishka[AuthService]) -> dict | None:
-    res = await service.create_user(
+@auth_route.post("/signup")
+async def signup_user(
+    schema: SUserIn, service: FromDishka[AuthService]
+) -> dict[str, str]:
+    res = await service.register(
         RequestUserDto(username=schema.username, password=schema.password)
     )
-    if res == "Ok":
-        return {"username": schema.username, "urls": None}
-    return None
+    return {"message": res}
+
+
+@auth_route.post("/login")
+async def login_user(
+    schema: SUserIn, service: FromDishka[AuthService]
+) -> dict[str, str]:
+    res = await service.login(
+        RequestUserDto(username=schema.username, password=schema.password)
+    )
+    return {"message": "ok", "id": str(res.uid)}
