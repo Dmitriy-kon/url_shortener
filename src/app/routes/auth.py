@@ -10,7 +10,10 @@ auth_route = APIRouter(tags=["auth"], prefix="/auth", route_class=DishkaRoute)
 
 
 @auth_route.post("/signup", response_model=SUserOut)
-async def signup_user(schema: SUserIn, service: FromDishka[AuthService]) -> str:
-    return await service.create_user(
+async def signup_user(schema: SUserIn, service: FromDishka[AuthService]) -> dict | None:
+    res = await service.create_user(
         RequestUserDto(username=schema.username, password=schema.password)
     )
+    if res == "Ok":
+        return {"username": schema.username, "urls": None}
+    return None

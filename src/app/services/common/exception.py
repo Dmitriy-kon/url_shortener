@@ -8,3 +8,7 @@ class ServiceError(Exception):
 
 class UserNotFoundError(ServiceError):
     pass
+
+
+class UserAlreadyExistsError(ServiceError):
+    pass

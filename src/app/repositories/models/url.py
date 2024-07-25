@@ -24,7 +24,7 @@ class UrlDb(Base):
     )
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.uid"))
-    user: Mapped["UserDb"] = relationship("User", back_populates="urls")
+    user: Mapped["UserDb"] = relationship("UserDb", back_populates="us_urls")
 
     def to_dto(self) -> ResponseUrlDto:
         return ResponseUrlDto(

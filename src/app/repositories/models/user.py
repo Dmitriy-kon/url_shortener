@@ -15,7 +15,7 @@ class UserDb(Base):
     __tablename__ = "users"
 
     uid: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(nullable=False)
+    username: Mapped[str] = mapped_column(nullable=False, unique=True)
     hashed_password: Mapped[str] = mapped_column(nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(
@@ -26,12 +26,12 @@ class UserDb(Base):
         onupdate=text("TIMEZONE('utc', NOW())"),
     )
 
-    urls: Mapped[list["UrlDb"]] = relationship("Url", back_populates="user")
+    us_urls: Mapped[list["UrlDb"]] = relationship("UrlDb", back_populates="user")
 
     def to_dto(self) -> ResponseUserDto:
         return ResponseUserDto.create(
             uid=cast(int, self.uid),
             username=cast(str, self.username),
             hashed_password=cast(str, self.hashed_password),
-            urls=cast(list["ResponseUrlDto"], [url.to_dto() for url in self.urls]),
+            urls=cast(list["ResponseUrlDto"], [url.to_dto() for url in self.us_urls]),
         )

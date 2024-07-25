@@ -8,7 +8,7 @@ class DatabaseConfig:
 
     @staticmethod
     def from_env() -> "DatabaseConfig":
-        return DatabaseConfig(db_uri=getenv("DATABASE_URI", "sqlite:///app.db"))
+        return DatabaseConfig(db_uri=getenv("DB_URI", "None"))
 
 
 @dataclass

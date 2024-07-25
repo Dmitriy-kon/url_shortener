@@ -2,13 +2,15 @@ from sqlalchemy.exc import IntegrityError
 
 from app.auth.hasher import hash_password, verify_password
 from app.repositories.user_repo import UserSqlalchemyRepository
-from app.services.common.exception import UserNotFoundError
+from app.services.abstraction.uow import UoW
+from app.services.common.exception import UserAlreadyExistsError, UserNotFoundError
 from app.services.dto.dto import RequestUidDto, RequestUserDto, ResponseUserDto
 
 
 class AuthService:
-    def __init__(self, user_repo: UserSqlalchemyRepository) -> None:
+    def __init__(self, user_repo: UserSqlalchemyRepository, uow: UoW) -> None:
         self.user_repo = user_repo
+        self.uow = uow
 
     async def get_user_by_username(self, input_dto: RequestUserDto) -> ResponseUserDto:
         user = await self.user_repo.get_user_by_username(input_dto.username)
@@ -28,7 +30,10 @@ class AuthService:
         hashed_password = hash_password(input_dto.password)
         try:
             await self.user_repo.create_user(input_dto.username, hashed_password)
+            await self.uow.commit()
         except IntegrityError:
-            return "Some exception"
+            raise UserAlreadyExistsError(
+                f"User with username {input_dto.username} already exist"
+            ) from None
         else:
             return "Ok"

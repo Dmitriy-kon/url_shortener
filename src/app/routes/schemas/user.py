@@ -11,6 +11,5 @@ class SUserIn(BaseModel):
 
 
 class SUserOut(BaseModel):
-    uid: int
     username: str
     urls: list[SUrlOut] | None
