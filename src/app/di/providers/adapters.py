@@ -14,7 +14,7 @@ from app.repositories.user_repo import UserSqlalchemyRepository
 from app.services.abstraction.uow import UoW
 
 
-class SqlalchemtProvider(Provider):
+class SqlalchemyProvider(Provider):
     @provide(scope=Scope.APP)
     def provide_config(self) -> Config:
         return Config()

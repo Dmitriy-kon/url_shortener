@@ -10,6 +10,7 @@ dependencies = [
   "uvicorn>=0.20.0",
   "dishka>=1.2.0",
   "bcrypt>=4.2.0",
+  "pyjwt>=2.8.0",
 ]
 description = "URL shortener"
 name = "url_shortener"

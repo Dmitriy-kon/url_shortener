@@ -1,7 +1,8 @@
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 
+from app.auth.jwt_processor import JwtTokenProcessor
 from app.routes.schemas.user import SUserIn, SUserOut
 from app.services.auth_service import AuthService
 from app.services.dto.dto import RequestUserDto
@@ -21,7 +22,10 @@ async def signup_user(
 
 @auth_route.post("/login")
 async def login_user(
-    schema: SUserIn, service: FromDishka[AuthService]
+    schema: SUserIn,
+    service: FromDishka[AuthService],
+    response: Response,
+    token_processor: FromDishka[JwtTokenProcessor],
 ) -> dict[str, str]:
     res = await service.login(
         RequestUserDto(username=schema.username, password=schema.password)
