@@ -5,7 +5,10 @@ from fastapi import APIRouter, Response
 from app.auth.jwt_processor import JwtTokenProcessor
 from app.routes.schemas.user import SUserIn, SUserOut
 from app.services.auth_service import AuthService
-from app.services.dto.dto import RequestUserDto
+from app.services.dto.dto import (
+    RequestUserDto,
+    ResponseUserDto,
+)
 
 auth_route = APIRouter(tags=["auth"], prefix="/auth", route_class=DishkaRoute)
 
@@ -20,14 +23,18 @@ async def signup_user(
     return {"message": res}
 
 
-@auth_route.post("/login")
+@auth_route.post("/login", response_model=SUserOut)
 async def login_user(
     schema: SUserIn,
     service: FromDishka[AuthService],
     response: Response,
     token_processor: FromDishka[JwtTokenProcessor],
-) -> dict[str, str]:
-    res = await service.login(
+) -> ResponseUserDto:
+    print(schema)
+    user = await service.login(
         RequestUserDto(username=schema.username, password=schema.password)
     )
-    return {"message": "ok", "id": str(res.uid)}
+    token = token_processor.generate_token(user.uid)
+    response.set_cookie(key="access_token", value=f"Bearer {token}", httponly=True)
+
+    return user

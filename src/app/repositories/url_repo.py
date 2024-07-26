@@ -5,7 +5,7 @@ from app.repositories.models import UrlDb
 from app.services.dto.dto import ResponseUrlDto
 
 
-class SqlalchemyUrlRepository:
+class UrlSqlalchemyRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
@@ -37,9 +37,19 @@ class SqlalchemyUrlRepository:
             return None
         return res_url.to_dto()
 
-    async def insert_url(self, url: str, short_url: str, user_id: int) -> None:
-        stmt = insert(UrlDb).values(url=url, short_url=short_url, user_id=user_id)
-        await self.session.execute(stmt)
+    async def insert_url(
+        self, url: str, short_url: str, user_id: int
+    ) -> ResponseUrlDto | None:
+        stmt = (
+            insert(UrlDb)
+            .values(url=url, short_url=short_url, user_id=user_id)
+            .returning(UrlDb)
+        )
+        res = await self.session.execute(stmt)
+        url_in_db = res.scalar()
+        if not url_in_db:
+            return None
+        return url_in_db.to_dto()
 
     async def change_url(self, url_id: int, url: str, short_url: str) -> None:
         stmt = (

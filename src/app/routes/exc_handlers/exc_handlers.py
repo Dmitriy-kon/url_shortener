@@ -7,6 +7,7 @@ from starlette.types import ExceptionHandler
 from app.services.common.exception import (
     UrlAllreadyExistsError,
     UserAlreadyExistsError,
+    UserIsNotAuthorizedError,
     UserNotFoundError,
     UserPasswordNotMatchError,
 )
@@ -18,6 +19,16 @@ async def user_not_found_handler(
     return JSONResponse(
         status_code=404,
         content={"message": exc.message},
+    )
+
+
+async def user_is_not_authorized_handler(
+    request: Request, exc: UserIsNotAuthorizedError
+) -> JSONResponse:
+    return JSONResponse(
+        status_code=401,
+        content={"message": exc.message},
+        headers={"WWW-Authenticate": "Bearer"},
     )
 
 
@@ -61,4 +72,7 @@ def init_exception_handlers(app: FastAPI) -> None:
     )
     app.add_exception_handler(
         UrlAllreadyExistsError, cast(ExceptionHandler, url_allready_exists_handler)
+    )
+    app.add_exception_handler(
+        UserIsNotAuthorizedError, cast(ExceptionHandler, user_is_not_authorized_handler)
     )

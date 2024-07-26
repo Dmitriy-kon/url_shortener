@@ -1,6 +1,7 @@
 from collections.abc import AsyncIterable
 
-from dishka import Provider, Scope, alias, provide
+from dishka import Provider, Scope, alias, from_context, provide
+from fastapi import Request
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -8,10 +9,13 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from app.auth.id_provider import JwtTokenIdProvider
+from app.auth.jwt_processor import JwtTokenProcessor
 from app.main.config import Config
-from app.repositories.url_repo import SqlalchemyUrlRepository
+from app.repositories.url_repo import UrlSqlalchemyRepository
 from app.repositories.user_repo import UserSqlalchemyRepository
 from app.services.abstraction.uow import UoW
+from app.utils.datetime_provide import SystemDateTime, Timezone
 
 
 class SqlalchemyProvider(Provider):
@@ -44,5 +48,31 @@ class SqlalchemyProvider(Provider):
         UserSqlalchemyRepository, scope=Scope.REQUEST, provides=UserSqlalchemyRepository
     )
     url_repository = provide(
-        SqlalchemyUrlRepository, scope=Scope.REQUEST, provides=SqlalchemyUrlRepository
+        UrlSqlalchemyRepository, scope=Scope.REQUEST, provides=UrlSqlalchemyRepository
     )
+
+
+class AuthProvider(Provider):
+    request = from_context(scope=Scope.REQUEST, provides=Request)
+
+    @provide(scope=Scope.APP)
+    def provide_config(self) -> Config:
+        return Config()
+
+    @provide(scope=Scope.APP)
+    def provide_system_datetime(self) -> SystemDateTime:
+        return SystemDateTime(Timezone.UTC)
+
+    @provide(scope=Scope.APP)
+    def provide_jwt_token_processor(
+        self, config: Config, system_datetime: SystemDateTime
+    ) -> JwtTokenProcessor:
+        return JwtTokenProcessor(config.jwt_config, system_datetime)
+
+    @provide(scope=Scope.REQUEST, provides=JwtTokenIdProvider)
+    def id_provider(
+        self, token_processor: JwtTokenProcessor, request: Request
+    ) -> JwtTokenIdProvider:
+        return JwtTokenIdProvider(
+            token_processor=token_processor, token=request.auth
+        )

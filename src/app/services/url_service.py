@@ -3,9 +3,11 @@ import string
 
 from sqlalchemy.exc import IntegrityError
 
-from app.repositories.url_repo import SqlalchemyUrlRepository
+from app.auth.id_provider import JwtTokenIdProvider
+from app.repositories.url_repo import UrlSqlalchemyRepository
+from app.repositories.user_repo import UserSqlalchemyRepository
 from app.services.abstraction.uow import UoW
-from app.services.common.exception import UrlAllreadyExistsError
+from app.services.common.exception import UrlAllreadyExistsError, UserNotFoundError
 from app.services.dto.dto import (
     RequestDeleteUrlDto,
     RequestInsertUrlDto,
@@ -16,23 +18,40 @@ from app.services.dto.dto import (
 
 
 class UrlService:
-    def __init__(self, url_repo: SqlalchemyUrlRepository, uow: UoW) -> None:
+    def __init__(
+        self,
+        url_repo: UrlSqlalchemyRepository,
+        user_repo: UserSqlalchemyRepository,
+        id_provider: JwtTokenIdProvider,
+        uow: UoW,
+    ) -> None:
         self.url_repo = url_repo
         self.uow = uow
+        self.user_repo = user_repo
+        self.id_provider = id_provider
 
     async def get_all_user_urls(
-        self, input_dto: RequestLimitOffsetUrlDto
+        self,
+        input_dto: RequestLimitOffsetUrlDto,
     ) -> list[ResponseUrlDto] | None:
+        user_id = self.id_provider.get_current_user_id()
+        user = await self.user_repo.get_user_by_id(user_id)
+        if not user:
+            raise UserNotFoundError(f"User with id {user_id} not found")
         res = await self.url_repo.get_all_user_urls(
-            limit=input_dto.limit, offset=input_dto.offset, user_id=input_dto.user_id
+            limit=input_dto.limit,
+            offset=input_dto.offset,
+            user_id=user_id,
         )
         if not res:
             return None
         return res
 
-    async def insert_url(self, input_dto: RequestInsertUrlDto) -> str:
+    async def insert_url(self, input_dto: RequestInsertUrlDto) -> ResponseUrlDto | None:
+        user_id = self.id_provider.get_current_user_id()
+
         check_url = await self.url_repo.get_url_by_userid_and_url(
-            user_id=input_dto.user_id, url=input_dto.url
+            user_id=user_id, url=input_dto.url
         )
         if check_url:
             raise UrlAllreadyExistsError(
@@ -47,10 +66,10 @@ class UrlService:
                 break
 
         try:
-            await self.url_repo.insert_url(
+            url_in_db = await self.url_repo.insert_url(
                 url=input_dto.url,
                 short_url=short_url,
-                user_id=input_dto.user_id,
+                user_id=user_id,
             )
             await self.uow.commit()
         except IntegrityError:
@@ -58,13 +77,11 @@ class UrlService:
                 f"Url {input_dto.url} already exists"
             ) from None
         else:
-            return "Ok"
+            return url_in_db
 
     async def change_url(self, input_dto: RequestUpdateUrlDto) -> str:
         try:
-            await self.url_repo.change_url(
-                url_id=input_dto.urlid, url=input_dto.url, short_url=input_dto.short_url
-            )
+            await self.url_repo.change_url(url_id=input_dto.urlid, url=input_dto.url)
         except IntegrityError:
             return "Some exception"
         else:

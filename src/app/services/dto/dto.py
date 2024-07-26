@@ -8,8 +8,10 @@ class RequestUserDto:
 
 
 @dataclass(frozen=True)
-class RequestUidDto:
-    id: int
+class AuthenticationResponseDto:
+    uid: int
+    name: str
+
 
 
 @dataclass(frozen=True)
@@ -37,7 +39,6 @@ class RequestUrlDto:
 class RequestLimitOffsetUrlDto:
     limit: int
     offset: int
-    user_id: int
 
 @dataclass(frozen=True)
 class RequestDeleteUrlDto:
@@ -47,7 +48,6 @@ class RequestDeleteUrlDto:
 @dataclass(frozen=True)
 class RequestInsertUrlDto:
     url: str
-    user_id: int
 
 
 @dataclass
