@@ -37,6 +37,14 @@ class UrlSqlalchemyRepository:
             return None
         return res_url.to_dto()
 
+    async def get_url_by_url_id(self, url_id: int) -> ResponseUrlDto | None:
+        stmt = select(UrlDb).where(UrlDb.urlid == url_id)
+        url_result = await self.session.execute(stmt)
+        res_url = url_result.scalar()
+        if not res_url:
+            return None
+        return res_url.to_dto()
+
     async def insert_url(
         self, url: str, short_url: str, user_id: int
     ) -> ResponseUrlDto | None:
@@ -51,13 +59,18 @@ class UrlSqlalchemyRepository:
             return None
         return url_in_db.to_dto()
 
-    async def change_url(self, url_id: int, url: str, short_url: str) -> None:
+    async def change_url(self, url_id: int, short_url: str) -> ResponseUrlDto | None:
         stmt = (
             update(UrlDb)
             .where(UrlDb.urlid == url_id)
-            .values(url=url, short_url=short_url)
+            .values(short_url=short_url)
+            .returning(UrlDb)
         )
-        await self.session.execute(stmt)
+        res = await self.session.execute(stmt)
+        url_in_db = res.scalar()
+        if not url_in_db:
+            return None
+        return url_in_db.to_dto()
 
     async def delete_url(self, url_id: int) -> None:
         stmt = delete(UrlDb).where(UrlDb.urlid == url_id)

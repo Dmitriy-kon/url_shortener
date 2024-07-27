@@ -30,7 +30,6 @@ async def login_user(
     response: Response,
     token_processor: FromDishka[JwtTokenProcessor],
 ) -> ResponseUserDto:
-    print(schema)
     user = await service.login(
         RequestUserDto(username=schema.username, password=schema.password)
     )

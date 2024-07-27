@@ -27,6 +27,20 @@ class JwtConfig:
 
 
 @dataclass
+class UrlConfig:
+    host: str
+    protocol: str
+
+    @staticmethod
+    def from_env() -> "UrlConfig":
+        return UrlConfig(
+            host=getenv("HOST", "None"),
+            protocol=getenv("PROTOCOL", "http"),
+        )
+
+
+@dataclass
 class Config:
     db_config: DatabaseConfig = field(default_factory=lambda: DatabaseConfig.from_env())
     jwt_config: JwtConfig = field(default_factory=lambda: JwtConfig.from_env())
+    url_config: UrlConfig = field(default_factory=lambda: UrlConfig.from_env())

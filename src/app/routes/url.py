@@ -10,6 +10,7 @@ from app.routes.schemas.urls import SUrlIn, SUrlOut
 from app.services.dto.dto import (
     RequestInsertUrlDto,
     RequestLimitOffsetUrlDto,
+    RequestUpdateUrlDto,
     ResponseUrlDto,
 )
 from app.services.url_service import UrlService
@@ -33,3 +34,10 @@ async def insert_url(
     schema: SUrlIn, service: FromDishka[UrlService]
 ) -> ResponseUrlDto | None:
     return await service.insert_url(RequestInsertUrlDto(url=schema.url))
+
+
+@url_router.patch("/change/", dependencies=[Depends(auth_required)])
+async def change_url(
+    url_id: int, service: FromDishka[UrlService]
+) -> ResponseUrlDto | None:
+    return await service.generate_new_short_url(RequestUpdateUrlDto(url_id))

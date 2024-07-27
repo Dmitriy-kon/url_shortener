@@ -32,4 +32,5 @@ class UrlDb(Base):
             url=cast(str, self.url),
             short_url=cast(str, self.short_url),
             clics=cast(int, self.clics),
+            user_id=cast(int, self.user_id),
         )

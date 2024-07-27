@@ -13,7 +13,6 @@ class AuthenticationResponseDto:
     name: str
 
 
-
 @dataclass(frozen=True)
 class ResponseUserDto:
     uid: int
@@ -35,10 +34,12 @@ class RequestUrlDto:
     url: str
     short_url: str
 
+
 @dataclass(frozen=True)
 class RequestLimitOffsetUrlDto:
     limit: int
     offset: int
+
 
 @dataclass(frozen=True)
 class RequestDeleteUrlDto:
@@ -53,7 +54,6 @@ class RequestInsertUrlDto:
 @dataclass
 class RequestUpdateUrlDto:
     urlid: int
-    url: str
 
 
 @dataclass(frozen=True)
@@ -62,7 +62,12 @@ class ResponseUrlDto:
     url: str
     short_url: str
     clics: int
+    user_id: int
 
     @staticmethod
-    def create(urlid: int, url: str, short_url: str, clics: int) -> "ResponseUrlDto":
-        return ResponseUrlDto(urlid=urlid, url=url, short_url=short_url, clics=clics)
+    def create(
+        urlid: int, url: str, short_url: str, clics: int, user_id: int
+    ) -> "ResponseUrlDto":
+        return ResponseUrlDto(
+            urlid=urlid, url=url, short_url=short_url, clics=clics, user_id=user_id
+        )

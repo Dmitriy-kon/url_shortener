@@ -24,3 +24,6 @@ class UserIsNotAuthorizedError(ServiceError):
 
 class UrlAllreadyExistsError(ServiceError):
     pass
+
+class UrlNotFoundError(ServiceError):
+    pass
