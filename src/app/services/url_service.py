@@ -104,9 +104,22 @@ class UrlService:
         else:
             return url_in_db
 
-    async def delete_url(self, input_dto: RequestDeleteUrlDto) -> None:
-        try:
-            await self.url_repo.delete_url(url_id=input_dto.urlid)
+    async def delete_url(self, input_dto: RequestDeleteUrlDto) -> ResponseUrlDto | None:
+        user_id = self.id_provider.get_current_user_id()
+        url_in_db = await self.url_repo.get_url_by_url_id(url_id=input_dto.urlid)
+        if not url_in_db:
+            raise UrlNotFoundError(f"Url with id {input_dto.urlid} not found")
 
+        if url_in_db.user_id != user_id:
+            raise UserIsNotAuthorizedError(
+                f"User with id {user_id} is not authorized to delete url with id\
+                    {input_dto.urlid}"
+            )
+        try:
+            url = await self.url_repo.delete_url(url_id=input_dto.urlid)
+            await self.uow.commit()
         except Exception as ex:  # noqa: BLE001
             print(f"Some exception {ex}")  # noqa: T201
+            return None
+        else:
+            return url

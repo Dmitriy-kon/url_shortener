@@ -51,7 +51,7 @@ class RequestInsertUrlDto:
     url: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class RequestUpdateUrlDto:
     urlid: int
 
