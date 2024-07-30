@@ -1,3 +1,4 @@
+import secrets
 from typing import Annotated
 
 from dishka import FromDishka
@@ -21,6 +22,7 @@ url_router = APIRouter(tags=["url"], prefix="/url", route_class=DishkaRoute)
 
 
 templates = Jinja2Templates(directory="../templates")
+
 
 @url_router.get(
     "/all", response_model=list[SUrlOut] | None, dependencies=[Depends(auth_required)]
@@ -52,3 +54,8 @@ async def delete_url(
     url_id: int, service: FromDishka[UrlService]
 ) -> ResponseUrlDto | None:
     return await service.delete_url(RequestDeleteUrlDto(url_id))
+
+
+@url_router.get("/test")
+async def test_url() -> str:
+    return secrets.choice(["test", "test2", "test3"])

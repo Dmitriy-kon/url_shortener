@@ -1,10 +1,13 @@
+from typing import Annotated
+
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Depends, Response
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 
 from app.auth.jwt_processor import JwtTokenProcessor
-from app.routes.schemas.user import SUserIn, SUserOut
+from app.routes.schemas.user import SUserOut
 from app.services.auth_service import AuthService
 from app.services.dto.dto import (
     RequestUserDto,
@@ -13,27 +16,29 @@ from app.services.dto.dto import (
 
 auth_route = APIRouter(tags=["auth"], prefix="/auth", route_class=DishkaRoute)
 
-templates = Jinja2Templates(directory="../templates")
+templates = Jinja2Templates(directory="src/app/templates")
+
 
 @auth_route.post("/signup")
 async def signup_user(
-    schema: SUserIn, service: FromDishka[AuthService]
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    service: FromDishka[AuthService],
 ) -> dict[str, str]:
     res = await service.register(
-        RequestUserDto(username=schema.username, password=schema.password)
+        RequestUserDto(username=form_data.username, password=form_data.password)
     )
     return {"message": res}
 
 
 @auth_route.post("/login", response_model=SUserOut)
 async def login_user(
-    schema: SUserIn,
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     service: FromDishka[AuthService],
     response: Response,
     token_processor: FromDishka[JwtTokenProcessor],
 ) -> ResponseUserDto:
     user = await service.login(
-        RequestUserDto(username=schema.username, password=schema.password)
+        RequestUserDto(username=form_data.username, password=form_data.password)
     )
     token = token_processor.generate_token(user.uid)
     response.set_cookie(key="access_token", value=f"Bearer {token}", httponly=True)
