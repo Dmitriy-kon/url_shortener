@@ -1,0 +1,12 @@
+<form
+hx-post="{{ url_for("signup_user") }}"
+hx-target="#response-div"
+>
+<label for="username">Username:</label>
+<input type="text" id="username" name="username" required>
+<br>
+<label for="password">Password:</label>
+<input type="password" id="password" name="password" required>
+<br>
+<button type="submit">SignUp</button>
+</form>

@@ -3,7 +3,7 @@ from typing import Annotated
 
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
 
 from app.routes.dependsecies.authentication import auth_required
@@ -21,17 +21,23 @@ from app.services.url_service import UrlService
 url_router = APIRouter(tags=["url"], prefix="/url", route_class=DishkaRoute)
 
 
-templates = Jinja2Templates(directory="../templates")
+templates = Jinja2Templates(directory="src/app/templates")
 
 
 @url_router.get(
     "/all", response_model=list[SUrlOut] | None, dependencies=[Depends(auth_required)]
 )
 async def get_all_user_urls(
-    schema: Annotated[SLimitOffsetUrl, Depends()], service: FromDishka[UrlService]
+    schema: Annotated[SLimitOffsetUrl, Depends()],
+    service: FromDishka[UrlService],
+    request: Request
 ) -> list[ResponseUrlDto] | None:
-    return await service.get_all_user_urls(
+    res = await service.get_all_user_urls(
         RequestLimitOffsetUrlDto(limit=schema.limit, offset=schema.offset)
+    )
+    # return res
+    return templates.TemplateResponse(
+        "urls/index.html", {"request": request, "urls": res}
     )
 
 

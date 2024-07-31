@@ -1,0 +1,17 @@
+<div id="url-{{ url.urlid }}" class="link-container">
+  <div class="link-header">
+    <span class="link-text">Изначальная URL:</span>
+    <div class="original-url">{{ url.url }}</div>
+  </div>
+  <div class="short-url">
+    <div>
+      <span class="link-text">Короткий вариант:</span>
+      <a href="{{ url.short_url }}">{{ url.short_url }}</a>
+    </div>
+    <div class="clics">нажато {{ url.clics }} раз</div>
+  </div>
+  <div class="link-buttons">
+    <button class="delete-button">Удалить</button>
+    <button class="generate-button">Сгенерировать новую короткую ссылку</button>
+  </div>
+</div>

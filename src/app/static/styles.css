@@ -1,0 +1,44 @@
+/* Цветовая схема */
+/*--primary-color: #6200ea; Фиолетовый*/
+:root {
+    --primary-color: #9148f8; /* Фиолетовый */
+    --border-color: #ab91cf;
+    --secondary-color: #03dac6; /* Зеленый */
+    --background-color: #f5f5f5; /* Светло-серый */
+    --text-color: #000000; /* Черный */
+    --link-color: #1a73e8; /* Синий */
+    --button-color: #6200ea; /* Цвет кнопки */
+    --button-hover-color: #3700b3; /* Цвет кнопки при наведении */
+    --input-border-color: #6200ea; /* Цвет рамки input */
+    --input-focus-color: #3700b3; /* Цвет рамки input при фокусе */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.global-wrapper {
+    width: 90%;
+    max-width: 1000px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    /* width: 900px; */
+}
+
+.header, .footer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+@import url('form.css');
+@import url('url.css');
