@@ -30,8 +30,8 @@ templates = Jinja2Templates(directory="src/app/templates")
 async def get_all_user_urls(
     schema: Annotated[SLimitOffsetUrl, Depends()],
     service: FromDishka[UrlService],
-    request: Request
-) -> list[ResponseUrlDto] | None:
+    request: Request,
+) -> list[ResponseUrlDto] | list:
     res = await service.get_all_user_urls(
         RequestLimitOffsetUrlDto(limit=schema.limit, offset=schema.offset)
     )
@@ -50,18 +50,17 @@ async def insert_url(
 
 @url_router.patch("/change", dependencies=[Depends(auth_required)])
 async def change_url(
-    url_id: int, service: FromDishka[UrlService]
+    url_id: int, service: FromDishka[UrlService], request: Request
 ) -> ResponseUrlDto | None:
-    return await service.generate_new_short_url(RequestUpdateUrlDto(url_id))
+    res = await service.generate_new_short_url(RequestUpdateUrlDto(url_id))
+    return templates.TemplateResponse(
+        "urls/components/short_url.html", {"request": request, "url": res}
+    )
 
 
 @url_router.delete("/delete", dependencies=[Depends(auth_required)])
 async def delete_url(
     url_id: int, service: FromDishka[UrlService]
 ) -> ResponseUrlDto | None:
-    return await service.delete_url(RequestDeleteUrlDto(url_id))
-
-
-@url_router.get("/test")
-async def test_url() -> str:
-    return secrets.choice(["test", "test2", "test3"])
+    res = await service.delete_url(RequestDeleteUrlDto(url_id))
+    return None

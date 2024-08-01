@@ -49,7 +49,7 @@ class UrlService:
             user_id=user_id,
         )
         if not res:
-            return None
+            return []
         return res
 
     async def insert_url(self, input_dto: RequestInsertUrlDto) -> ResponseUrlDto | None:

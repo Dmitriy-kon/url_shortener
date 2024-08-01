@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='form.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='url.css') }}">
+
   </head>
   <body>
-    <div class="global-wrapper">
+    <div class="global-wrapper" id="response-div">
       {% block body %} {% endblock %}
     </div>
       <script
@@ -17,5 +18,7 @@
       integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0"
       crossorigin="anonymous"
     ></script>
+    <script type="module" src="{{ url_for("static", path="script.js")}}"></script>
+
   </body>
 </html>

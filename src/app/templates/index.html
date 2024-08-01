@@ -5,10 +5,10 @@
 {% block body %}
     <h2><a href="{{ url_for("index") }}"> INDEX</a></h2>
 
-    <div id="response-div">
+    {# <div id="response-div"> #}
     {% include "auth/login.html" %}
 
 
     {# <button hx-get="{{ url_for("signup_user") }}" type="submit">Register</button> #}
-    </div>
+    {# </div> #}
 {% endblock %}

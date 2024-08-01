@@ -4,6 +4,11 @@
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    min-width: 50vw;
+}
+
+#response-div {
+    display: flex;
 }
 
 .login-form {
