@@ -1,1 +1,3 @@
-<a id="short-url" href="{{ url.short_url }}">{{ url.short_url }}</a>
+<a id="short-url{{ url.urlid }}" class="button" href="{{ url.short_url }}">Перейти</a>
+<!-- <button id="short-url" href="/t/?short={{ url.short_url }}">Перейти</button> -->
+<button id="copy-url{{ url.urlid }}" class="copy-button" data-url="{{ url.short_url }}">Копировать</button>

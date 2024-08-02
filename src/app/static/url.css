@@ -48,7 +48,7 @@
 
 .original-url, .short-url a {
     display: block;
-    margin-top: 4px;
+    /* margin-top: 4px; */
     color: var(--text-color);
 }
 
@@ -63,7 +63,7 @@
 .short-url a {
     color: var(--link-color);
     text-decoration: none;
-    margin-top: 10px;
+    /* margin-top: 10px; */
 }
 
 .clics {
@@ -77,10 +77,10 @@
 .link-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
-.link-buttons button {
+.link-buttons button, .link-buttons a {
     padding: 8px 12px;
     background-color: var(--button-color);
     color: #ffffff;
@@ -90,7 +90,7 @@
     font-size: 0.9em;
 }
 
-.link-buttons button:hover {
+.link-buttons button:hover, .link-buttons a:hover {
     background-color: var(--button-hover-color);
 }
 
@@ -133,4 +133,21 @@
 
 .add-link-wrapper button:hover {
     background-color: var(--button-hover-color);
+}
+
+.url-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+
+    margin-top: 15px;
+    gap: 30px;
+}
+
+.delete-button {
+    background-color: var(--delete-button) !important;
+}
+.delete-button:hover {
+    background-color: var(--delete-button-hover) !important;
 }

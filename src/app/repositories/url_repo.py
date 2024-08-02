@@ -72,6 +72,19 @@ class UrlSqlalchemyRepository:
             return None
         return url_in_db.to_dto()
 
+    async def update_url_clicks(self, url_id: int) -> ResponseUrlDto | None:
+        stmt = (
+            update(UrlDb)
+            .where(UrlDb.urlid == url_id)
+            .values(clics=UrlDb.clics + 1)
+            .returning(UrlDb)
+        )
+        res = await self.session.execute(stmt)
+        url_in_db = res.scalar()
+        if not url_in_db:
+            return None
+        return url_in_db.to_dto()
+
     async def delete_url(self, url_id: int) -> ResponseUrlDto | None:
         stmt = delete(UrlDb).where(UrlDb.urlid == url_id).returning(UrlDb)
         res = await self.session.execute(stmt)

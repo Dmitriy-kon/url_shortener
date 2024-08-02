@@ -39,6 +39,6 @@ class AuthService:
             )
         if not verify_password(input_dto.password, user_dto.hashed_password):
             raise UserPasswordNotMatchError(
-                f"User with username {input_dto.username} does not exist"
+                f"Incorrect password for user {input_dto.username}"
             )
         return user_dto

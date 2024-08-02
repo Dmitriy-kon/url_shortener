@@ -56,7 +56,7 @@ class RequestUpdateUrlDto:
     urlid: int
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class ResponseUrlDto:
     urlid: int
     url: str

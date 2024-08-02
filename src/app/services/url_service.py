@@ -17,7 +17,7 @@ from app.services.dto.dto import (
     RequestUpdateUrlDto,
     ResponseUrlDto,
 )
-from app.utils.get_short_url import GetShortUrl
+from app.utils.get_short_url import GenerateShortUrl, GenerateShortUrls, GetShortUrl
 
 
 class UrlService:
@@ -28,12 +28,16 @@ class UrlService:
         id_provider: JwtTokenIdProvider,
         uow: UoW,
         get_short_url: GetShortUrl,
+        generate_short_urls: GenerateShortUrls,
+        generate_short_url: GenerateShortUrl,
     ) -> None:
         self.url_repo = url_repo
         self.uow = uow
         self.user_repo = user_repo
         self.id_provider = id_provider
         self.get_short_url = get_short_url
+        self.generate_short_urls = generate_short_urls
+        self.generate_short_url = generate_short_url
 
     async def get_all_user_urls(
         self,
@@ -50,7 +54,22 @@ class UrlService:
         )
         if not res:
             return []
-        return res
+        return await self.generate_short_urls(res)
+
+    async def get_url_by_short_url(self, short_url: str) -> ResponseUrlDto | None:
+        # short_url =
+        url = await self.url_repo.get_url_by_short_url(short_url=short_url)
+        if not url:
+            return None
+        try:
+            await self.url_repo.update_url_clicks(url_id=url.urlid)
+            await self.uow.commit()
+        except IntegrityError as exc:
+            raise UrlNotFoundError(f"Url with short url {short_url} not found") from exc
+
+        if not url:
+            return None
+        return url
 
     async def insert_url(self, input_dto: RequestInsertUrlDto) -> ResponseUrlDto | None:
         user_id = self.id_provider.get_current_user_id()
@@ -101,8 +120,9 @@ class UrlService:
             await self.uow.commit()
         except IntegrityError:
             return None
-        else:
-            return url_in_db
+        if not url_in_db:
+            return None
+        return await self.generate_short_url(url_in_db)
 
     async def delete_url(self, input_dto: RequestDeleteUrlDto) -> ResponseUrlDto | None:
         user_id = self.id_provider.get_current_user_id()

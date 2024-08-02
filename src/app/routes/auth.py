@@ -4,10 +4,10 @@ from typing import Annotated
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter, Depends, Request, Response
-from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 
 from app.auth.jwt_processor import JwtTokenProcessor
+from app.routes.schemas.oauth2_password_form import OAuth2PasswordForm
 from app.routes.schemas.user import SUserOut
 from app.services.auth_service import AuthService
 from app.services.dto.dto import (
@@ -22,7 +22,7 @@ templates = Jinja2Templates(directory="src/app/templates")
 
 @auth_route.post("/signup")
 async def signup_user(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    form_data: Annotated[OAuth2PasswordForm, Depends()],
     service: FromDishka[AuthService],
     response: Response,
     request: Request,
@@ -40,7 +40,7 @@ async def signup_user(
 
 @auth_route.post("/login", response_model=SUserOut)
 async def login_user(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    form_data: Annotated[OAuth2PasswordForm, Depends()],
     service: FromDishka[AuthService],
     response: Response,
     token_processor: FromDishka[JwtTokenProcessor],

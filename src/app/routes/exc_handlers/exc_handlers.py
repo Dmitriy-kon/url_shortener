@@ -37,7 +37,7 @@ async def user_already_exists_handler(
     request: Request, exc: UserAlreadyExistsError
 ) -> JSONResponse:
     return JSONResponse(
-        status_code=422,
+        status_code=409,
         content={"message": exc.message},
     )
 
@@ -55,7 +55,7 @@ async def url_allready_exists_handler(
     request: Request, exc: UrlAllreadyExistsError
 ) -> JSONResponse:
     return JSONResponse(
-        status_code=422,
+        status_code=409,
         content={"message": exc.message},
     )
 

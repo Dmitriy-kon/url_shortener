@@ -1,9 +1,15 @@
-from pydantic import BaseModel
+from typing import Annotated
+
+from fastapi import Query
+from pydantic import BaseModel, HttpUrl
 
 
 class SUrlIn(BaseModel):
-    url: str
+    url: HttpUrl
 
+
+class SUrlInQuery(BaseModel):
+    short: Annotated[str, Query()]
 
 
 class SUrlOut(BaseModel):

@@ -16,7 +16,7 @@ from app.repositories.url_repo import UrlSqlalchemyRepository
 from app.repositories.user_repo import UserSqlalchemyRepository
 from app.services.abstraction.uow import UoW
 from app.utils.datetime_provide import SystemDateTime, Timezone
-from app.utils.get_short_url import GetShortUrl
+from app.utils.get_short_url import GenerateShortUrl, GenerateShortUrls, GetShortUrl
 
 
 class SqlalchemyProvider(Provider):
@@ -61,6 +61,13 @@ class UrlsProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def provide_get_short_url(self, config: Config) -> GetShortUrl:
         return GetShortUrl(config.url_config)
+
+    @provide(scope=Scope.REQUEST)
+    def generate_short_url(self, config: Config) -> GenerateShortUrl:
+        return GenerateShortUrl(config.url_config)
+    @provide(scope=Scope.REQUEST)
+    def generate_short_urls(self, config: Config) -> GenerateShortUrls:
+        return GenerateShortUrls(config.url_config)
 
 
 class AuthProvider(Provider):

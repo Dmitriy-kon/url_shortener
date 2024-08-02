@@ -6,7 +6,10 @@
   <div class="short-url">
     <div>
       <span class="link-text">Короткий вариант:</span>
-      <a id="short-url{{ url.urlid }}" href="{{ url.short_url }}">{{ url.short_url }}</a>
+    <div class="link-buttons url-buttons">
+      <!-- <a id="short-url{{ url.urlid }}" href="{{ url.short_url }}">{{ url.short_url }}</a> -->
+       {% include "urls/components/short_url.html" %}
+    </div>
     </div>
     <div class="clics">нажато {{ url.clics }} раз</div>
   </div>
@@ -18,8 +21,6 @@
     <button class="delete-button" data-url-id="{{ url.urlid }}">Удалить</button>
     <button
     data-url-id="{{ url.urlid }}"
-    {# hx-patch="{{ url_for("change_url") }}/?url_id={{ url.urlid }}"
-    hx-target="#short-url{{ url.urlid }}" #}
     class="generate-button">Сгенерировать новую короткую ссылку</button>
   </div>
 </div>
