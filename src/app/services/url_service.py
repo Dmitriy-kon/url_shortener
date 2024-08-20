@@ -56,20 +56,7 @@ class UrlService:
             return []
         return await self.generate_short_urls(res)
 
-    async def get_url_by_short_url(self, short_url: str) -> ResponseUrlDto | None:
-        # short_url =
-        url = await self.url_repo.get_url_by_short_url(short_url=short_url)
-        if not url:
-            return None
-        try:
-            await self.url_repo.update_url_clicks(url_id=url.urlid)
-            await self.uow.commit()
-        except IntegrityError as exc:
-            raise UrlNotFoundError(f"Url with short url {short_url} not found") from exc
 
-        if not url:
-            return None
-        return url
 
     async def insert_url(self, input_dto: RequestInsertUrlDto) -> ResponseUrlDto | None:
         user_id = self.id_provider.get_current_user_id()
