@@ -32,7 +32,6 @@ def create_app() -> FastAPI:
     app = FastAPI()
 
     init_cors(app)
-    # init_static(app)
     init_di(app)
     init_routes(app)
     init_exception_handlers(app)

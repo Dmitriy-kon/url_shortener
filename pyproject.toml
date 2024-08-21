@@ -34,6 +34,7 @@ dev = [
 filterwarnings = ["ignore::DeprecationWarning"]
 pythonpath = ["src"]
 testpaths = ["tests"]
+asyncio_mode = "auto"
 
 [tool.mypy]
 ignore_missing_imports = true
