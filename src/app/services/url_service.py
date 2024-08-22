@@ -1,7 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 
 from app.auth.id_provider import JwtTokenIdProvider
-from app.repositories.url_repo import UrlSqlalchemyRepository
+from app.repositories.abstract import UrlRepository
 from app.repositories.user_repo import UserSqlalchemyRepository
 from app.services.abstraction.uow import UoW
 from app.services.common.exception import (
@@ -23,7 +23,7 @@ from app.utils.get_short_url import GenerateShortUrl, GenerateShortUrls, GetShor
 class UrlService:
     def __init__(
         self,
-        url_repo: UrlSqlalchemyRepository,
+        url_repo: UrlRepository,
         user_repo: UserSqlalchemyRepository,
         id_provider: JwtTokenIdProvider,
         uow: UoW,
@@ -55,8 +55,6 @@ class UrlService:
         if not res:
             return []
         return await self.generate_short_urls(res)
-
-
 
     async def insert_url(self, input_dto: RequestInsertUrlDto) -> ResponseUrlDto | None:
         user_id = self.id_provider.get_current_user_id()

@@ -1,6 +1,14 @@
 from dataclasses import dataclass, field
 from os import getenv
+from pathlib import Path
 
+from dotenv import (
+    find_dotenv,
+    load_dotenv,
+)
+
+BASE_DIR = Path(__file__).parent.parent.parent
+load_dotenv(find_dotenv(".env.dev"))
 
 @dataclass
 class DatabaseConfig:

@@ -1,6 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 
-from app.repositories.url_repo import UrlSqlalchemyRepository
+from app.repositories.abstract import UrlRepository
 from app.services.abstraction.uow import UoW
 from app.services.common.exception import (
     UrlNotFoundError,
@@ -11,7 +11,7 @@ from app.services.dto.dto import (
 
 
 class GetUrlFromShortUrl:
-    def __init__(self, url_repo: UrlSqlalchemyRepository, uow: UoW) -> None:
+    def __init__(self, url_repo: UrlRepository, uow: UoW) -> None:
         self.url_repo = url_repo
         self.uow = uow
 

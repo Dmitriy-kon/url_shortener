@@ -2,7 +2,8 @@ from contextlib import nullcontext as not_raise
 
 import pytest
 from pydantic import ValidationError
-from src.app.routes.schemas.urls import SUrlIn
+
+from app.routes.schemas.urls import SUrlIn
 
 
 class TestUrlValidate:

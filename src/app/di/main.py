@@ -1,6 +1,7 @@
 from dishka import AsyncContainer, make_async_container
 
 from app.di.providers.adapters import AuthProvider, SqlalchemyProvider, UrlsProvider
+from app.di.providers.funcs import UrlsFunctionProvider
 from app.di.providers.services import ServiceProvider
 
 
@@ -10,4 +11,5 @@ def container_factory() -> AsyncContainer:
         SqlalchemyProvider(),
         AuthProvider(),
         UrlsProvider(),
+        # UrlsFunctionProvider(),
     )
