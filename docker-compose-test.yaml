@@ -1,0 +1,50 @@
+# version: "3.12"
+
+networks:
+  default:
+
+
+services:
+  api:
+    container_name: url_shortener_test
+    build:
+      context: .
+    command: pytest -v
+    # ports:
+    #   - "8000:8000"
+    env_file:
+      - .env.test
+    volumes:
+      - .:/app
+    depends_on:
+      test_db:
+        condition: service_healthy
+    # profiles: [ "api" ]
+
+    networks:
+      - default
+
+  test_db:
+    container_name: postgres-test
+    image: postgres:16
+
+    volumes:
+      - pgdatatest:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    # environment:
+    #   - POSTGRES_DB=${POSTGRES_DB}
+    #   - POSTGRES_USER=${POSTGRES_USER}
+    #   - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    env_file:
+      - .env.test
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+    networks:
+      - default
+
+volumes:
+  pgdatatest:
