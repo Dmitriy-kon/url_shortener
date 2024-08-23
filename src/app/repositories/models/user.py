@@ -33,5 +33,8 @@ class UserDb(Base):
             uid=cast(int, self.uid),
             username=cast(str, self.username),
             hashed_password=cast(str, self.hashed_password),
-            urls=cast(list["ResponseUrlDto"], [url.to_dto() for url in self.us_urls]),
+            urls=cast(
+                list["ResponseUrlDto"],
+                [url.to_dto() for url in self.us_urls],
+            ),
         )

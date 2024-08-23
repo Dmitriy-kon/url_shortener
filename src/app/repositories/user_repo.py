@@ -34,19 +34,36 @@ class UserSqlalchemyRepository:
             return None
         return user.to_dto()
 
-    async def create_user(self, username: str, hashed_password: str) -> None:
-        stmt = insert(UserDb).values(username=username, hashed_password=hashed_password)
-        await self.session.execute(stmt)
+    async def create_user(
+        self, username: str, hashed_password: str
+    ) -> ResponseUserDto | None:
+        stmt = (
+            insert(UserDb)
+            .values(username=username, hashed_password=hashed_password)
+            .options(selectinload(UserDb.us_urls))
+            .returning(UserDb)
+        )
+        user_in_db = await self.session.execute(stmt)
+        user = user_in_db.unique().scalar()
+        if not user:
+            return None
+        return user.to_dto()
 
     async def change_user(
         self, user_id: int, username: str, hashed_password: str
-    ) -> None:
+    ) -> ResponseUserDto | None:
         stmt = (
             update(UserDb)
             .where(UserDb.uid == user_id)
             .values(username=username, hashed_password=hashed_password)
+            .options(selectinload(UserDb.us_urls))
+            .returning(UserDb)
         )
-        await self.session.execute(stmt)
+        user_in_db = await self.session.execute(stmt)
+        user = user_in_db.unique().scalar()
+        if not user:
+            return None
+        return user.to_dto()
 
     async def delete_user(self, user_id: int) -> None:
         stmt = delete(UserDb).where(UserDb.uid == user_id)

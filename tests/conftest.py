@@ -14,16 +14,28 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from .database_command import create_database, database_exists, drop_database
+from .database_command import (
+    create_database,
+    database_exists,
+    disconnect_users_from_database,
+    drop_database,
+)
 from .mocks import MockUrlRepository
+from .setttings import SettingTest
 
 BASE_DIR = Path(__file__).parent.parent
-load_dotenv(find_dotenv(".env.test"))
+load_dotenv(find_dotenv(".env.test.local"))
 
 
 @pytest.fixture(scope="session")
-def _migrate() -> Generator[None, None]:
-    postgres_url = os.getenv("DB_URI", "sqlite+aiosqlite:///test.db")
+def settings() -> SettingTest:
+    return SettingTest()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _migrate(settings) -> Generator[None, None]:
+    """Run migration for Template database"""
+    postgres_url = settings.db_config.db_template_url
     alembic_script = "./conf/alembic.ini"
 
     alembic_cfg = AlembicConfig(alembic_script)
@@ -34,41 +46,57 @@ def _migrate() -> Generator[None, None]:
 
     upgrade(alembic_cfg, "head")
     yield
-    downgrade(alembic_cfg, "base")
+    # downgrade(alembic_cfg, "base")
+
+
+@pytest.fixture(scope="session", autouse=True)
+async def create_db(settings: SettingTest) -> AsyncGenerator[None, None]:
+    test_engine = create_async_engine(
+        settings.db_config.db_template_url,
+        poolclass=NullPool,
+        echo=False,
+        isolation_level="AUTOCOMMIT",
+    )
+
+    if not await database_exists(settings.db_config.db_test_name, test_engine):
+        await create_database(
+            settings.db_config.db_test_name,
+            test_engine,
+            settings.db_config.db_tamplate_name,
+        )
+
+    yield
+
+    if await database_exists(settings.db_config.db_test_name, test_engine):
+        await disconnect_users_from_database(
+            settings.db_config.db_test_name, test_engine
+        )
+        await drop_database(settings.db_config.db_test_name, test_engine)
 
 
 @pytest.fixture(scope="session")
-async def test_engine() -> AsyncEngine:
-    database_url = os.getenv("DB_URI", "sqlite+aiosqlite:///test.db")
+async def test_engine(settings) -> AsyncGenerator[AsyncEngine, None]:
+    database_url = settings.db_config.db_test_url
     database_params = {"poolclass": NullPool}
+    engine = create_async_engine(database_url, **database_params)
 
-    return create_async_engine(database_url, **database_params)
+    try:
+        yield engine
+    finally:
+        await engine.dispose()
 
 
 @pytest.fixture(scope="session")
 async def async_sessionmaker_test(test_engine) -> async_sessionmaker[AsyncSession]:
-    return async_sessionmaker(test_engine, expire_on_commit=False)
+    return async_sessionmaker(
+        test_engine, expire_on_commit=False, autoflush=False
+    )
 
 
 @pytest.fixture()
 async def async_session(async_sessionmaker_test) -> AsyncGenerator[AsyncSession, None]:
     async with async_sessionmaker_test() as session:
         yield session
-
-
-@pytest.fixture(scope="session", autouse=True)
-async def create_db(test_engine: AsyncEngine, _migrate) -> AsyncGenerator[None, None]:
-    test_database_url = (
-        "postgresql+psycopg://dimit:2121@localhost:5433/url_test_db_test"
-    )
-
-    if not await database_exists(test_database_url, test_engine):
-        await create_database(test_database_url, test_engine)
-
-    yield
-
-    if await database_exists(test_database_url, test_engine):
-        await drop_database(test_database_url, test_engine)
 
 
 @pytest.fixture()
