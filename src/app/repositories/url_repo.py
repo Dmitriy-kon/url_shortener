@@ -14,7 +14,8 @@ class UrlSqlalchemyRepository:
     ) -> list[ResponseUrlDto] | None:
         stmt = select(UrlDb).where(UrlDb.user_id == user_id).limit(limit).offset(offset)
         url_results = await self.session.execute(stmt)
-        urls = url_results.scalars()
+        urls = url_results.scalars().all()
+
         if not urls:
             return None
         return [url.to_dto() for url in urls]
