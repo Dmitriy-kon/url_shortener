@@ -76,10 +76,6 @@ class AuthProvider(Provider):
     request = from_context(scope=Scope.REQUEST, provides=Request)
 
     @provide(scope=Scope.APP)
-    def provide_config(self) -> Config:
-        return Config()
-
-    @provide(scope=Scope.APP)
     def provide_system_datetime(self) -> SystemDateTime:
         return SystemDateTime(Timezone.UTC)
 

@@ -4,31 +4,30 @@ from app.main.config import UrlConfig
 from app.repositories.abstract import UrlRepository
 from app.services.dto.dto import ResponseUrlDto
 
-
-async def get_short_url(url_repo: UrlRepository) -> str:
-    while True:
-        short_code = secrets.token_urlsafe(16)
-        if not await url_repo.get_url_by_short_url(short_url=short_code):
-            break
-    return short_code
-
-
-async def generate_short_urls(
-    config: UrlConfig, urls_dto: list[ResponseUrlDto]
-) -> list[ResponseUrlDto]:
-    res = []
-    for i in urls_dto:
-        i.short_url = f"{config.protocol}://{config.host}/t/?short={i.short_url}"
-        res.append(i)
-
-    return res
+# async def get_short_url(url_repo: UrlRepository) -> str:
+#     while True:
+#         short_code = secrets.token_urlsafe(16)
+#         if not await url_repo.get_url_by_short_url(short_url=short_code):
+#             break
+#     return short_code
 
 
-async def generate_short_url(config: UrlConfig, url_dto: ResponseUrlDto):
-    url_dto.short_url = (
-        f"{config.protocol}://{config.host}/t/?short={url_dto.short_url}"
-    )
-    return url_dto
+# async def generate_short_urls(
+#     config: UrlConfig, urls_dto: list[ResponseUrlDto]
+# ) -> list[ResponseUrlDto]:
+#     res = []
+#     for i in urls_dto:
+#         i.short_url = f"{config.protocol}://{config.host}/t/?short={i.short_url}"
+#         res.append(i)
+
+#     return res
+
+
+# async def generate_short_url(config: UrlConfig, url_dto: ResponseUrlDto):
+#     url_dto.short_url = (
+#         f"{config.protocol}://{config.host}/t/?short={url_dto.short_url}"
+#     )
+#     return url_dto
 
 
 class GetShortUrl:
