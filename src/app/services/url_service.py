@@ -1,8 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 
 from app.auth.id_provider import JwtTokenIdProvider
-from app.repositories.abstract import UrlRepository
-from app.repositories.user_repo import UserSqlalchemyRepository
+from app.repositories.abstract import UrlRepository, UserRepository
 from app.services.abstraction.uow import UoW
 from app.services.common.exception import (
     UrlAllreadyExistsError,
@@ -24,7 +23,7 @@ class UrlService:
     def __init__(
         self,
         url_repo: UrlRepository,
-        user_repo: UserSqlalchemyRepository,
+        user_repo: UserRepository,
         id_provider: JwtTokenIdProvider,
         uow: UoW,
         get_short_url: GetShortUrl,

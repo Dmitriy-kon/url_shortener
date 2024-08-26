@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import (
 from app.auth.id_provider import JwtTokenIdProvider
 from app.auth.jwt_processor import JwtTokenProcessor
 from app.main.config import Config
-from app.repositories.abstract import UrlRepository
+from app.repositories.abstract import UrlRepository, UserRepository
 from app.repositories.url_repo import UrlSqlalchemyRepository
 from app.repositories.user_repo import UserSqlalchemyRepository
 from app.services.abstraction.uow import UoW
@@ -47,7 +47,7 @@ class SqlalchemyProvider(Provider):
     uow = alias(source=AsyncSession, provides=UoW)
 
     user_repository = provide(
-        UserSqlalchemyRepository, scope=Scope.REQUEST, provides=UserSqlalchemyRepository
+        UserSqlalchemyRepository, scope=Scope.REQUEST, provides=UserRepository
     )
     url_repository = provide(
         UrlSqlalchemyRepository, scope=Scope.REQUEST, provides=UrlRepository

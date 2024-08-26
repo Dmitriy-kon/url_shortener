@@ -1,3 +1,3 @@
-from app.repositories.abstract.abstracts import UrlRepository
+from app.repositories.abstract.abstracts import UrlRepository, UserRepository
 
-__all__ = ["UrlRepository"]
+__all__ = ["UrlRepository", "UserRepository"]

@@ -13,7 +13,7 @@ class AuthenticationResponseDto:
     name: str
 
 
-@dataclass(frozen=True)
+@dataclass()
 class ResponseUserDto:
     uid: int
     username: str

@@ -1,6 +1,6 @@
 from typing import Protocol, runtime_checkable
 
-from app.services.dto.dto import ResponseUrlDto
+from app.services.dto.dto import ResponseUrlDto, ResponseUserDto
 
 
 @runtime_checkable
@@ -33,4 +33,26 @@ class UrlRepository(Protocol):
         raise NotImplementedError
 
     async def delete_url(self, url_id: int) -> ResponseUrlDto | None:
+        raise NotImplementedError
+
+
+@runtime_checkable
+class UserRepository(Protocol):
+    async def get_user_by_id(self, user_id: int) -> ResponseUserDto | None:
+        raise NotImplementedError
+
+    async def get_user_by_username(self, username: str) -> ResponseUserDto | None:
+        raise NotImplementedError
+
+    async def create_user(
+        self, username: str, hashed_password: str
+    ) -> ResponseUserDto | None:
+        raise NotImplementedError
+
+    async def change_user(
+        self, user_id: int, username: str, hashed_password: str
+    ) -> ResponseUserDto | None:
+        raise NotImplementedError
+
+    async def delete_user(self, user_id: int) -> ResponseUserDto | None:
         raise NotImplementedError

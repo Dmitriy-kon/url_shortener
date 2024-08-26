@@ -15,13 +15,13 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from tests.mocks.mock_url_repo import MockUrlRepository
 from .database_command import (
     create_database,
     database_exists,
     disconnect_users_from_database,
     drop_database,
 )
-from .mocks import MockUrlRepository
 from .setttings import SettingTest
 
 BASE_DIR = Path(__file__).parent.parent
