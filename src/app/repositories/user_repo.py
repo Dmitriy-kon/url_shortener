@@ -65,6 +65,9 @@ class UserSqlalchemyRepository:
             return None
         return user.to_dto()
 
-    async def delete_user(self, user_id: int) -> None:
-        stmt = delete(UserDb).where(UserDb.uid == user_id)
-        await self.session.execute(stmt)
+    async def delete_user(self, user_id: int) -> None | str:
+        stmt = delete(UserDb).where(UserDb.uid == user_id).returning(UserDb)
+        res = await self.session.execute(stmt)
+        if res.scalar() is None:
+            return None
+        return "User deleted"

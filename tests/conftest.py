@@ -1,4 +1,5 @@
-import os
+import asyncio
+import sys
 from collections.abc import AsyncGenerator, Generator
 from pathlib import Path
 
@@ -25,6 +26,9 @@ from .setttings import SettingTest
 
 BASE_DIR = Path(__file__).parent.parent
 load_dotenv(find_dotenv(".env.test.local"))
+
+if sys.platform.startswith("win"):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
 @pytest.fixture(scope="session")
@@ -88,9 +92,7 @@ async def test_engine(settings) -> AsyncGenerator[AsyncEngine, None]:
 
 @pytest.fixture(scope="session")
 async def async_sessionmaker_test(test_engine) -> async_sessionmaker[AsyncSession]:
-    return async_sessionmaker(
-        test_engine, expire_on_commit=False, autoflush=False
-    )
+    return async_sessionmaker(test_engine, expire_on_commit=False, autoflush=False)
 
 
 @pytest.fixture()
