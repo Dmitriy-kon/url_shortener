@@ -19,6 +19,7 @@ class DbTestSettings:
             db_tamplate_name=os.getenv("POSTGRES_DB", "template_db"),
         )
 
+
 @dataclass
 class SettingTest:
     db_config: DbTestSettings = field(default_factory=lambda: DbTestSettings.from_env())

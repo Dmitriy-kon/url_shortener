@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from tests.mocks.mock_url_repo import MockUrlRepository
+from tests.mocks.mock_user_repo import MockUserRepository
 from .database_command import (
     create_database,
     database_exists,
@@ -104,3 +105,8 @@ async def async_session(async_sessionmaker_test) -> AsyncGenerator[AsyncSession,
 @pytest.fixture()
 def url_repo():
     return MockUrlRepository()
+
+
+@pytest.fixture()
+def user_repo():
+    return MockUserRepository()
