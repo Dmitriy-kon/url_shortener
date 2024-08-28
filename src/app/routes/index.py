@@ -20,7 +20,7 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-@index_route.get("/t")
+@index_route.get("/t/")
 async def get_url_from_short(
     schema: Annotated[SUrlInQuery, Depends()],
     get_url_from_short_url: FromDishka[GetUrlFromShortUrl],

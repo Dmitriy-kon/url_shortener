@@ -27,7 +27,7 @@ class SqlalchemyProvider(Provider):
 
     @provide(scope=Scope.APP)
     def provide_engine(self, config: Config) -> AsyncEngine:
-        return create_async_engine(config.db_config.db_uri, echo=True)
+        return create_async_engine(config.db_config.db_uri, echo=False)
 
     @provide(scope=Scope.APP)
     def provide_sessionmaker(

@@ -47,14 +47,14 @@ async def insert_url(
     return await service.insert_url(RequestInsertUrlDto(url=str(schema.url)))
 
 
-@url_router.patch("/change", dependencies=[Depends(auth_required)])
+@url_router.patch("/change/", dependencies=[Depends(auth_required)])
 async def change_url(
     url_id: int, service: FromDishka[UrlService]
 ) -> ResponseUrlDto | None:
     return await service.generate_new_short_url(RequestUpdateUrlDto(url_id))
 
 
-@url_router.delete("/delete", dependencies=[Depends(auth_required)])
+@url_router.delete("/delete/", dependencies=[Depends(auth_required)])
 async def delete_url(
     url_id: int, service: FromDishka[UrlService]
 ) -> ResponseUrlDto | None:

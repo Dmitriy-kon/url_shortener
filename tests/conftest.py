@@ -15,18 +15,19 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from tests.mocks.mock_url_repo import MockUrlRepository
-from tests.mocks.mock_user_repo import MockUserRepository
-from .database_command import (
+from tests.database_command import (
     create_database,
     database_exists,
     disconnect_users_from_database,
     drop_database,
 )
-from .setttings import SettingTest
+from tests.mocks.mock_url_repo import MockUrlRepository
+from tests.mocks.mock_user_repo import MockUserRepository
+from tests.setttings import SettingTest
 
 BASE_DIR = Path(__file__).parent.parent
 load_dotenv(find_dotenv(".env.test.local"))
+
 
 if sys.platform.startswith("win"):
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -48,10 +49,9 @@ def _migrate(settings) -> Generator[None, None]:
         "sqlalchemy.url",
         postgres_url,
     )
-
     upgrade(alembic_cfg, "head")
     yield
-    # downgrade(alembic_cfg, "base")
+    downgrade(alembic_cfg, "base")
 
 
 @pytest.fixture(scope="session", autouse=True)

@@ -9,6 +9,7 @@ class DbTestSettings:
 
     db_test_name: str
     db_tamplate_name: str
+    db_uri: str
 
     @staticmethod
     def from_env() -> "DbTestSettings":
@@ -17,6 +18,7 @@ class DbTestSettings:
             db_template_url=os.getenv("DB_URI_TEMPLATE", "sqlite:///template.db"),
             db_test_name=os.getenv("POSTGRES_DB_TEST_NAME", "test_db"),
             db_tamplate_name=os.getenv("POSTGRES_DB", "template_db"),
+            db_uri=os.getenv("DB_URI_TEST", "None"),
         )
 
 

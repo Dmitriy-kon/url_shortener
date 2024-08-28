@@ -8,7 +8,9 @@ from dotenv import (
 )
 
 BASE_DIR = Path(__file__).parent.parent.parent
-load_dotenv(find_dotenv(".env.dev"))
+
+if not getenv("DB_URI"):
+    load_dotenv(find_dotenv(".env.dev"))
 
 @dataclass
 class DatabaseConfig:

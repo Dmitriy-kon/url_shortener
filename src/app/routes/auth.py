@@ -24,11 +24,11 @@ async def signup_user(
     form_data: Annotated[OAuth2PasswordForm, Depends()],
     service: FromDishka[AuthService],
 ) -> dict[str, str]:
-    res = await service.register(
+    await service.register(
         RequestUserDto(username=form_data.username, password=form_data.password)
     )
 
-    return {"message": res}
+    return {"message": "user created"}
 
 
 @auth_route.post("/login", response_model=SUserOut)
