@@ -1,28 +1,30 @@
 # version: "3.12"
 
 networks:
-  default:
+  default-test:
 
 
 services:
-  api:
+  api-test:
     container_name: url_shortener_test
     build:
       context: .
+      dockerfile: Dockerfile
     command: pytest -v
-    # ports:
-    #   - "8000:8000"
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.test.prod
     # env_file:
-    #   - .env.test
+    #   - .env.test.local
     volumes:
       - .:/app
     depends_on:
       test_db:
         condition: service_healthy
-    # profiles: [ "api" ]
 
     networks:
-      - default
+      - default-test
 
   test_db:
     container_name: postgres-test
@@ -32,19 +34,18 @@ services:
       - pgdatatest:/var/lib/postgresql/data
     ports:
       - "5433:5432"
-    # environment:
-    #   - POSTGRES_DB=${POSTGRES_DB}
-    #   - POSTGRES_USER=${POSTGRES_USER}
-    #   - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
     env_file:
-      - .env.test.local
+      - .env.test.prod
+    # env_file:
+    #   - .env.test.local
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
       interval: 5s
       timeout: 30s
       retries: 5
     networks:
-      - default
+      - default-test
 
 volumes:
   pgdatatest:
