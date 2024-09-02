@@ -22,11 +22,11 @@ To set up the project locally, follow these steps:
 
 1. **Environment Configuration:**
 
-   - Create env.dev by following the example in .env.dev.dist.
-   - Similarly, create env.test.local by following the example in .env.test.local.dist.
+   - Create `env.dev` by following the example in `.dist.env.dev`.
+   - Similarly, create `env.test.local` by following the example in `.dist.env.test.local`.
 
 2. **Set Up the Virtual Environment:**
-   - Run python -m venv env to create a virtual environment.
+   - Run `python -m venv env` to create a virtual environment.
    - Activate the environment:
      - On Linux: `source ./env/bin/activate`
      - On Windows: `./env/Scripts/activate`
@@ -44,8 +44,8 @@ To set up the project locally, follow these steps:
 To deploy the application in production using Docker containers, follow these steps:
 
 1. **Environment Configuration:**
-   - Create env.prod by following the example in .env.prod.dist.
-   - Similarly, create env.test.prod by following the example in .env.test.prod.dist.
+   - Create `env.prod` by following the example in `.dist.env.prod`.
+   - Similarly, create `env.test.prod` by following the example in `.dist.env.test.prod`.
 
 2. **Starting and Stopping Containers:**
    - Start the production containers with `make prod-start`.
