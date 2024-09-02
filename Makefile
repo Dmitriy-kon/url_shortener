@@ -5,10 +5,11 @@ help:
 	@echo "  prod-stop          - Stop the production environment"
 	@echo "  dev-start          - Start the development environment"
 	@echo "  dev-stop           - Stop the development environment"
-	@echo "  test-start         - Start the production test environment"
+	@echo "  test-start         - Start the production test environment and delete all containers after test"
 	@echo "  test-stop          - Stop the production test environment"
 	@echo "  test-local-start   - Start the local test environment"
 	@echo "  test-local-stop    - Stop the local test environment"
+
 
 .PHONY: prod-start
 prod-start:
@@ -28,7 +29,8 @@ dev-stop:
 
 .PHONY: test-start
 test-start:
-	docker compose -f docker-compose-prod-test.yaml up
+	docker compose -f docker-compose-prod-test.yaml up --abort-on-container-exit
+	make test-stop
 
 .PHONY: test-stop
 test-stop:

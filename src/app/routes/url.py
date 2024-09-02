@@ -40,21 +40,27 @@ async def get_all_user_urls(
     )
 
 
-@url_router.post("/insert", dependencies=[Depends(auth_required)])
+@url_router.post(
+    "/insert", dependencies=[Depends(auth_required)], response_model=SUrlOut
+)
 async def insert_url(
     schema: SUrlIn, service: FromDishka[UrlService]
 ) -> ResponseUrlDto | None:
     return await service.insert_url(RequestInsertUrlDto(url=str(schema.url)))
 
 
-@url_router.patch("/change/", dependencies=[Depends(auth_required)])
+@url_router.patch(
+    "/change/", dependencies=[Depends(auth_required)], response_model=SUrlOut
+)
 async def change_url(
     url_id: int, service: FromDishka[UrlService]
 ) -> ResponseUrlDto | None:
     return await service.generate_new_short_url(RequestUpdateUrlDto(url_id))
 
 
-@url_router.delete("/delete/", dependencies=[Depends(auth_required)])
+@url_router.delete(
+    "/delete/", dependencies=[Depends(auth_required)], response_model=SUrlOut
+)
 async def delete_url(
     url_id: int, service: FromDishka[UrlService]
 ) -> ResponseUrlDto | None:

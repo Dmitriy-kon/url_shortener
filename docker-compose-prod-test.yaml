@@ -30,8 +30,8 @@ services:
     container_name: postgres-test
     image: postgres:16
 
-    volumes:
-      - pgdatatest:/var/lib/postgresql/data
+    # volumes:
+    #   - pgdatatest:/var/lib/postgresql/data
     ports:
       - "5433:5432"
 
@@ -47,5 +47,5 @@ services:
     networks:
       - default-test
 
-volumes:
-  pgdatatest:
+# volumes:
+#   pgdatatest:

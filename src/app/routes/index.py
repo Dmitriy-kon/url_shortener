@@ -24,7 +24,6 @@ async def index(request: Request):
 async def get_url_from_short(
     schema: Annotated[SUrlInQuery, Depends()],
     get_url_from_short_url: FromDishka[GetUrlFromShortUrl],
-    # config: FromDishka[Config],
 ) -> RedirectResponse:
     res = await get_url_from_short_url(schema.short)
     if not res:
